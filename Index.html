@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NEXORA BOOST</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:#080b18;
+ color:white;
+ font-family:Arial,sans-serif;
+}
+header{
+ padding:22px;
+ background:#11162b;
+ border-bottom:1px solid #292f50;
+}
+.logo{
+ font-size:27px;
+ font-weight:bold;
+ color:#a78bfa;
+}
+main{
+ max-width:900px;
+ margin:auto;
+ padding:20px;
+}
+.card{
+ background:#151b30;
+ border:1px solid #343c60;
+ border-radius:14px;
+ padding:20px;
+ margin-bottom:18px;
+}
+h2{color:#c4b5fd}
+.stats{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:10px;
+}
+.stat{
+ background:#202744;
+ padding:15px;
+ border-radius:10px;
+ text-align:center;
+}
+.value{
+ font-size:27px;
+ font-weight:bold;
+ color:#a78bfa;
+}
+button{
+ background:#7655df;
+ color:white;
+ border:0;
+ border-radius:9px;
+ padding:13px 20px;
+ font-weight:bold;
+ cursor:pointer;
+}
+button:disabled{opacity:.6}
+select{
+ background:#202744;
+ color:white;
+ border:1px solid #454e78;
+ border-radius:8px;
+ padding:12px;
+ width:100%;
+}
+footer{
+ text-align:center;
+ padding:25px;
+ color:#858da8;
+}
+@media(max-width:500px){
+ .stats{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+ <div class="logo">NEXORA BOOST</div>
+ <small>GAMING NETWORK OPTIMIZER</small>
+</header>
+
+<main>
+ <section class="card">
+  <h2>Dashboard</h2>
+  <p>Witaj w NEXORA BOOST.</p>
+  <p>Status: <span id="status">Gotowy do testu</span></p>
+  <button onclick="runTest()" id="testButton">
+   TEST CONNECTION
+  </button>
+ </section>
+
+ <section class="card">
+  <h2>Network statistics</h2>
+  <div class="stats">
+   <div class="stat">
+    <p>Ping</p>
+    <div class="value" id="ping">--</div>
+    <small>ms</small>
+   </div>
+   <div class="stat">
+    <p>Jitter</p>
+    <div class="value" id="jitter">--</div>
+    <small>ms</small>
+   </div>
+   <div class="stat">
+    <p>Packet loss</p>
+    <div class="value" id="loss">--</div>
+    <small>brak danych</small>
+   </div>
+  </div>
+ </section>
+
+ <section class="card">
+  <h2>Game profiles</h2>
+  <select id="game">
+   <option>Fortnite</option>
+   <option>Valorant</option>
+   <option>Counter-Strike 2</option>
+   <option>Rocket League</option>
+  </select>
+  <p>Wybrana gra: <b id="selectedGame">Fortnite</b></p>
+ </section>
+
+ <section class="card">
+  <h2>Route Finder</h2>
+  <p id="routeStatus">
+   Analiza tras będzie dostępna w kolejnych etapach.
+  </p>
+ </section>
+</main>
+
+<footer>
+ NEXORA BOOST © 2026
+</footer>
+
+<script>
+document.getElementById("game").addEventListener("change",function(){
+ document.getElementById("selectedGame").textContent=this.value;
+});
+
+async function runTest(){
+ const button=document.getElementById("testButton");
+ const status=document.getElementById("status");
+ button.disabled=true;
+ status.textContent="Testowanie...";
+ const samples=[];
+ try{
+  for(let i=0;i<5;i++){
+   const start=performance.now();
+   await fetch("https://www.cloudflare.com/cdn-cgi/trace?x="+Math.random(),{
+    cache:"no-store",
+    mode:"no-cors"
+   });
+   samples.push(performance.now()-start);
+  }
+  const avg=samples.reduce((a,b)=>a+b,0)/samples.length;
+  const variation=Math.max(...samples)-Math.min(...samples);
+  document.getElementById("ping").textContent=Math.round(avg);
+  document.getElementById("jitter").textContent=Math.round(variation);
+  document.getElementById("loss").textContent="N/D";
+  status.textContent="Test zakończony";
+ }catch(e){
+  status.textContent="Nie udało się wykonać testu";
+ }
+ button.disabled=false;
+}
+</script>
+</body>
+</html>
